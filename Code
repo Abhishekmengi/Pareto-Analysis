@@ -1,3 +1,4 @@
+# Data Range is such that Item Name, Total nos and Affected nos is in respective columns A, B and C
 function PPMCalculation1() {
   var spreadsheet = SpreadsheetApp.getActive();
   spreadsheet.getRange('A:C').activate();
