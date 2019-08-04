@@ -1,0 +1,86 @@
+function PPMCalculation1() {
+  var spreadsheet = SpreadsheetApp.getActive();
+  spreadsheet.getRange('A:C').activate();
+  var sourceData = spreadsheet.getRange('A:C');
+  spreadsheet.insertSheet(spreadsheet.getActiveSheet().getIndex() + 1).activate();
+  spreadsheet.getActiveSheet().setHiddenGridlines(true);
+  var pivotTable = spreadsheet.getRange('A1').createPivotTable(sourceData);
+  pivotTable = spreadsheet.getRange('A1').createPivotTable(sourceData);
+  var pivotGroup = pivotTable.addRowGroup(1);
+  pivotTable = spreadsheet.getRange('A1').createPivotTable(sourceData);
+  var pivotValue = pivotTable.addPivotValue(2, SpreadsheetApp.PivotTableSummarizeFunction.SUM);
+  pivotGroup = pivotTable.addRowGroup(1);
+  pivotTable = spreadsheet.getRange('A1').createPivotTable(sourceData);
+  pivotValue = pivotTable.addPivotValue(2, SpreadsheetApp.PivotTableSummarizeFunction.SUM);
+  pivotValue = pivotTable.addPivotValue(3, SpreadsheetApp.PivotTableSummarizeFunction.SUM);
+  pivotGroup = pivotTable.addRowGroup(1);
+  spreadsheet.getRange('D1').activate();
+  spreadsheet.getCurrentCell().setValue('PPM');
+  spreadsheet.getRange('D2').activate();
+  spreadsheet.getCurrentCell().setFormula('=round(C2/Data_entry_sheet!$F$1*1000000)');
+  spreadsheet.getActiveRange().autoFill(spreadsheet.getRange('D2:D263'), SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
+  spreadsheet.getRange('D2:D263').activate();
+  spreadsheet.getActiveSheet().setName('PPM_Calculation');
+};
+
+function ParetoDist() {
+  var spreadsheet = SpreadsheetApp.getActive();
+  spreadsheet.getRange('G16').activate();
+  spreadsheet.getActiveSheet().setName('PPM_Calculation');
+  spreadsheet.getRange('A:D').activate();
+  spreadsheet.insertSheet(2);
+  spreadsheet.getRange('\'PPM_Calculation\'!A:D').copyTo(spreadsheet.getActiveRange(), SpreadsheetApp.CopyPasteType.PASTE_VALUES, false);
+  spreadsheet.getRange('D:D').activate();
+  spreadsheet.getActiveSheet().sort(4, false);
+  spreadsheet.getRange('A1').activate();
+  var currentCell = spreadsheet.getCurrentCell();
+  spreadsheet.getSelection().getNextDataRange(SpreadsheetApp.Direction.DOWN).activate();
+  currentCell.activateAsCurrentCell();
+  spreadsheet.getRange('F1').activate();
+  spreadsheet.getRange('A1:A20').copyTo(spreadsheet.getActiveRange(), SpreadsheetApp.CopyPasteType.PASTE_NORMAL, false);
+  spreadsheet.getRange('G1').activate();
+  spreadsheet.getCurrentCell().setValue('Percentage');
+  spreadsheet.getRange('G2').activate();
+  spreadsheet.getCurrentCell().setFormula('=round(D2/Data_entry_sheet!$F$3*100)');
+  spreadsheet.getActiveRange().autoFill(spreadsheet.getRange('G2:G20'), SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
+  spreadsheet.getRange('H1').activate();
+  spreadsheet.getCurrentCell().setValue('Cummulative');
+  spreadsheet.getRange('H2').activate();
+  spreadsheet.getCurrentCell().setFormula('=G2');
+  spreadsheet.getRange('H3').activate();
+  spreadsheet.getCurrentCell().setFormula('=H2+G3');
+  spreadsheet.getActiveRange().autoFill(spreadsheet.getRange('H3:H20'), SpreadsheetApp.AutoFillSeries.DEFAULT_SERIES);
+  spreadsheet.getRange('F1').activate();
+  currentCell = spreadsheet.getCurrentCell();
+  spreadsheet.getSelection().getNextDataRange(SpreadsheetApp.Direction.NEXT).activate();
+  currentCell.activateAsCurrentCell();
+  currentCell = spreadsheet.getCurrentCell();
+  spreadsheet.getSelection().getNextDataRange(SpreadsheetApp.Direction.DOWN).activate();
+  currentCell.activateAsCurrentCell();
+  spreadsheet.getRange('F1:H21').activate();
+  var sheet = spreadsheet.getActiveSheet();
+  var chart = sheet.newChart()
+  .asColumnChart()
+  .addRange(spreadsheet.getRange('F1:H21'))
+  .setMergeStrategy(Charts.ChartMergeStrategy.MERGE_COLUMNS)
+  .setTransposeRowsAndColumns(false)
+  .setNumHeaders(-1)
+  .setHiddenDimensionStrategy(Charts.ChartHiddenDimensionStrategy.IGNORE_BOTH)
+  .setPosition(1, 4, 65, 139)
+  .build();
+  sheet.insertChart(chart);
+  var charts = sheet.getCharts();
+  chart = charts[charts.length - 1];
+  sheet.removeChart(chart);
+  chart = sheet.newChart()
+  .asComboChart()
+  .addRange(spreadsheet.getRange('F1:H21'))
+  .setMergeStrategy(Charts.ChartMergeStrategy.MERGE_COLUMNS)
+  .setTransposeRowsAndColumns(false)
+  .setNumHeaders(-1)
+  .setHiddenDimensionStrategy(Charts.ChartHiddenDimensionStrategy.IGNORE_BOTH)
+  .setPosition(1, 4, 65, 139)
+  .build();
+  sheet.insertChart(chart);
+  spreadsheet.getActiveSheet().setName('Pareto Chart')
+};
